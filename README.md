@@ -15,4 +15,4 @@ A zero-dependency local web STL file navigator and PDF guide viewer for the VAUL
 在“组件查找器”中选择您的模块规格尺寸，或在“组装说明书”标签下查阅对应的装配图纸。
 
 
- 
+<img width="1421" height="999" alt="Screenshot 2026-10-20 at 11 52 30 AM" src="https://github.com/user-attachments/assets/52e6a013-3c73-48c8-90b7-a7678ab3da4e" />
