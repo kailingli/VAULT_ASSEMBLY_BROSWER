@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>VAULT_USSA Project Hub</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      padding: 16px;
+      background: #0f1117;
+      color: #e6edf3;
+      margin: 0;
+    }
+    .container {
+      max-width: 1400px;
+      width: 96vw;
+      margin: 0 auto;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      overflow: hidden;
+    }
+    .header {
+      padding: 16px 24px;
+      border-bottom: 1px solid #30363d;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    h2 {
+      margin: 0;
+      font-size: 20px;
+      color: #58a6ff;
+    }
+    .lang-btn {
+      background: #21262d;
+      border: 1px solid #30363d;
+      color: #58a6ff;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .lang-btn:hover {
+      background: #30363d;
+      border-color: #58a6ff;
+    }
+    .nav-tabs {
+      display: flex;
+      background: #0d1117;
+      border-bottom: 1px solid #30363d;
+      padding: 0 24px;
+      gap: 8px;
+    }
+    .tab-btn {
+      background: none;
+      border: none;
+      color: #8b949e;
+      padding: 14px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: color 0.15s ease, border-color 0.15s ease;
+    }
+    .tab-btn:hover {
+      color: #c9d1d9;
+    }
+    .tab-btn.active {
+      color: #58a6ff;
+      border-bottom-color: #58a6ff;
+    }
+    .tab-content {
+      padding: 24px;
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .selectors {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #8b949e;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    select {
+      width: 100%;
+      background: #21262d;
+      border: 1px solid #30363d;
+      color: #f0f6fc;
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      outline: none;
+    }
+    select:focus {
+      border-color: #58a6ff;
+    }
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #f0883e;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 24px 0 12px;
+    }
+    .item-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .file-card {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .file-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      overflow: hidden;
+    }
+    .file-name {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 14px;
+      font-weight: 600;
+      color: #7ee787;
+      text-decoration: none;
+    }
+    .file-name:hover {
+      text-decoration: underline;
+    }
+    .file-path {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11px;
+      color: #8b949e;
+    }
+    .qty-tag {
+      background: #1f6feb26;
+      color: #58a6ff;
+      border: 1px solid #388bfd4d;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .hardware-card {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 14px;
+      color: #c9d1d9;
+    }
+    details {
+      margin-top: 24px;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      background: #0d1117;
+      padding: 12px 16px;
+    }
+    summary {
+      font-size: 13px;
+      font-weight: 600;
+      color: #8b949e;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .manual-links {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .manual-link-btn {
+      background: #21262d;
+      border: 1px solid #30363d;
+      color: #c9d1d9;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .manual-link-btn:hover {
+      border-color: #58a6ff;
+      color: #58a6ff;
+    }
+    .manual-link-btn.active-doc {
+      background: #1f6feb26;
+      border-color: #388bfd;
+      color: #58a6ff;
+    }
+    .pdf-viewer-frame {
+      width: 100%;
+      height: calc(100vh - 210px);
+      min-height: 800px;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      background: #0d1117;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h2 id="ui-title">VAULT_USSA Project Hub</h2>
+    <button class="lang-btn" id="lang-toggle" onclick="toggleLanguage()">中文</button>
+  </div>
+
+  <nav class="nav-tabs">
+    <button class="tab-btn active" id="tab-btn-finder" onclick="switchTab('finder', this)">Component Finder</button>
+    <button class="tab-btn" id="tab-btn-manuals" onclick="switchTab('manuals', this)">Assembly Manuals</button>
+  </nav>
+
+  <!-- TAB 1: FILE RESOLVER -->
+  <div id="tab-finder" class="tab-content active">
+    <div class="selectors">
+      <div>
+        <label for="width" id="label-width">Width Family</label>
+        <select id="width" onchange="renderList()"></select>
+      </div>
+      <div>
+        <label for="depth" id="label-depth">Depth (Gridfinity Units)</label>
+        <select id="depth" onchange="renderList()"></select>
+      </div>
+      <div>
+        <label for="height" id="label-height">Height</label>
+        <select id="height" onchange="renderList()"></select>
+      </div>
+    </div>
+
+    <div class="section-title" id="title-size-files">Size-Specific Files To Print</div>
+    <ul class="item-list" id="size-files"></ul>
+
+    <div class="section-title" id="title-hardware">Fasteners Required</div>
+    <div class="hardware-card" id="hardware-spec"></div>
+
+    <details>
+      <summary id="summary-universal">Show Universal Mechanism Batch Files (Print Once Per Drawer)</summary>
+      <ul class="item-list" style="margin-top: 12px;">
+        <li class="file-card">
+          <div class="file-info">
+            <a class="file-name" href="01.%20DRAWERS/07.%20Universal/Runners/Runner%20Guides.stl" download>Runner Guides.stl</a>
+            <span class="file-path">01. DRAWERS/07. Universal/Runners/Runner Guides.stl</span>
+          </div>
+          <span class="qty-tag">x2</span>
+        </li>
+        <li class="file-card">
+          <div class="file-info">
+            <a class="file-name" href="01.%20DRAWERS/07.%20Universal/Runners/Runner%20Slides.stl" download>Runner Slides.stl</a>
+            <span class="file-path">01. DRAWERS/07. Universal/Runners/Runner Slides.stl</span>
+          </div>
+          <span class="qty-tag">x2</span>
+        </li>
+        <li class="file-card">
+          <div class="file-info">
+            <a class="file-name" href="01.%20DRAWERS/07.%20Universal/Runners/Runner%20Stopper.stl" download>Runner Stopper.stl</a>
+            <span class="file-path">01. DRAWERS/07. Universal/Runners/Runner Stopper.stl</span>
+          </div>
+          <span class="qty-tag">x2</span>
+        </li>
+        <li class="file-card">
+          <div class="file-info">
+            <a class="file-name" href="01.%20DRAWERS/07.%20Universal/Latch.stl" download>Latch.stl</a>
+            <span class="file-path">01. DRAWERS/07. Universal/Latch.stl</span>
+          </div>
+          <span class="qty-tag">x1</span>
+        </li>
+        <li class="file-card">
+          <div class="file-info">
+            <a class="file-name" href="01.%20DRAWERS/07.%20Universal/Springs.stl" download>Springs.stl</a>
+            <span class="file-path">01. DRAWERS/07. Universal/Springs.stl</span>
+          </div>
+          <span class="qty-tag">x2</span>
+        </li>
+        <li class="file-card">
+          <div class="file-info">
+            <a class="file-name" href="01.%20DRAWERS/07.%20Universal/Key%20Lock.stl" download>Key Lock.stl</a>
+            <span class="file-path">01. DRAWERS/07. Universal/Key Lock.stl</span>
+          </div>
+          <span class="qty-tag">x1</span>
+        </li>
+        <li class="file-card">
+          <div class="file-info">
+            <a class="file-name" href="01.%20DRAWERS/07.%20Universal/Key%20Cap.stl" download>Key Cap.stl</a>
+            <span class="file-path">01. DRAWERS/07. Universal/Key Cap.stl</span>
+          </div>
+          <span class="qty-tag">x1</span>
+        </li>
+        <li class="file-card">
+          <div class="file-info">
+            <a class="file-name" href="01.%20DRAWERS/07.%20Universal/Facade%20Cap.stl" download>Facade Cap.stl</a>
+            <span class="file-path">01. DRAWERS/07. Universal/Facade Cap.stl</span>
+          </div>
+          <span class="qty-tag">x1</span>
+        </li>
+        <li class="file-card">
+          <div class="file-info">
+            <a class="file-name" href="01.%20DRAWERS/07.%20Universal/Label.stl" download>Label.stl</a>
+            <span class="file-path">01. DRAWERS/07. Universal/Label.stl</span>
+          </div>
+          <span class="qty-tag">x1</span>
+        </li>
+      </ul>
+    </details>
+  </div>
+
+  <!-- TAB 2: EMBEDDED ASSEMBLY MANUALS -->
+  <div id="tab-manuals" class="tab-content">
+    <div class="manual-links">
+      <button class="manual-link-btn active-doc" id="mbtn-02" onclick="loadPdf('02_Drawer Assembly.pdf', this)">Drawer Assembly</button>
+      <button class="manual-link-btn" id="mbtn-03" onclick="loadPdf('03_Sustainers Assembly.pdf', this)">Sustainers Assembly</button>
+      <button class="manual-link-btn" id="mbtn-04" onclick="loadPdf('04_Modifications.pdf', this)">Modifications</button>
+      <button class="manual-link-btn" id="mbtn-05" onclick="loadPdf('05_Mounting Instructions.pdf', this)">Mounting Instructions</button>
+      <button class="manual-link-btn" id="mbtn-01" onclick="loadPdf('01_Instructions Manual.pdf', this)">Full Instructions Manual</button>
+    </div>
+  <iframe id="pdf-frame" class="pdf-viewer-frame" src="02_Drawer Assembly.pdf#zoom=page-width"></iframe>
+  </div>
+</div>
+
+<script>
+let currentLang = 'en';
+
+const i18n = {
+  en: {
+    title: "VAULT_USSA Project Hub",
+    langToggle: "中文",
+    tabFinder: "Component Finder",
+    tabManuals: "Assembly Manuals",
+    labelWidth: "Width Family",
+    labelDepth: "Depth (Gridfinity Units)",
+    labelHeight: "Height",
+    titleSizeFiles: "Size-Specific Files To Print",
+    titleHardware: "Fasteners Required",
+    summaryUniversal: "Show Universal Mechanism Batch Files (Print Once Per Drawer)",
+    topTierNote: "(Optional - Top Tier Only)",
+    qtyTopTier: "x1 (top tier)",
+    boltText: (count) => `<strong>M4 x 14mm bolts:</strong> x${count} per drawer`,
+    mbtn02: "Drawer Assembly",
+    mbtn03: "Sustainers Assembly",
+    mbtn04: "Modifications",
+    mbtn05: "Mounting Instructions",
+    mbtn01: "Full Instructions Manual",
+    widthOptions: [
+      { val: 'S', text: 'S (Small)' },
+      { val: 'M', text: 'M (Medium)' },
+      { val: 'L', text: 'L (Large)' },
+      { val: 'XL', text: 'XL (Extra Large)' }
+    ],
+    depthOptions: [
+      { val: '3', text: '3 Units (126 mm)' },
+      { val: '4', text: '4 Units (168 mm)' },
+      { val: '5', text: '5 Units (210 mm)' },
+      { val: '6', text: '6 Units (252 mm)' },
+      { val: '7', text: '7 Units (294 mm)' }
+    ],
+    heightOptions: [
+      { val: '1F', text: '1F (Single Height)' },
+      { val: '2F', text: '2F (Double Height)' },
+      { val: '4F', text: '4F (Quad Height)' }
+    ]
+  },
+  zh: {
+    title: "VAULT_USSA 打印控制台",
+    langToggle: "English",
+    tabFinder: "组件查找器",
+    tabManuals: "组装说明书",
+    labelWidth: "宽度规格 (Width)",
+    labelDepth: "深度规格 (Gridfinity 单元)",
+    labelHeight: "层高 (Height)",
+    titleSizeFiles: "当前尺寸对应待打印文件",
+    titleHardware: "所需五金螺丝",
+    summaryUniversal: "查看抽屉通用结构件 (每层抽屉打印一套)",
+    topTierNote: "(可选 - 仅最顶层需要)",
+    qtyTopTier: "1个 (顶层)",
+    boltText: (count) => `<strong>M4 x 14mm 螺丝:</strong> 每层抽屉需 ${count} 颗`,
+    mbtn02: "抽屉组装指南 (02)",
+    mbtn03: "工具箱组装指南 (03)",
+    mbtn04: "扩展改装部件 (04)",
+    mbtn05: "安装固定说明 (05)",
+    mbtn01: "完整系统手册 (01)",
+    widthOptions: [
+      { val: 'S', text: 'S (小号)' },
+      { val: 'M', text: 'M (中号)' },
+      { val: 'L', text: 'L (大号)' },
+      { val: 'XL', text: 'XL (特大号)' }
+    ],
+    depthOptions: [
+      { val: '3', text: '3 单元 (126 mm)' },
+      { val: '4', text: '4 单元 (168 mm)' },
+      { val: '5', text: '5 单元 (210 mm)' },
+      { val: '6', text: '6 单元 (252 mm)' },
+      { val: '7', text: '7 单元 (294 mm)' }
+    ],
+    heightOptions: [
+      { val: '1F', text: '1F (单层高度)' },
+      { val: '2F', text: '2F (双倍高度)' },
+      { val: '4F', text: '4F (四倍高度)' }
+    ]
+  }
+};
+
+function populateDropdowns() {
+  const curW = document.getElementById('width').value || 'S';
+  const curD = document.getElementById('depth').value || '3';
+  const curH = document.getElementById('height').value || '1F';
+
+  const texts = i18n[currentLang];
+
+  const wSelect = document.getElementById('width');
+  wSelect.innerHTML = texts.widthOptions.map(o => `<option value="${o.val}" ${o.val===curW?'selected':''}>${o.text}</option>`).join('');
+
+  const dSelect = document.getElementById('depth');
+  dSelect.innerHTML = texts.depthOptions.map(o => `<option value="${o.val}" ${o.val===curD?'selected':''}>${o.text}</option>`).join('');
+
+  const hSelect = document.getElementById('height');
+  hSelect.innerHTML = texts.heightOptions.map(o => `<option value="${o.val}" ${o.val===curH?'selected':''}>${o.text}</option>`).join('');
+}
+
+function updateStaticText() {
+  const t = i18n[currentLang];
+  document.getElementById('ui-title').textContent = t.title;
+  document.getElementById('lang-toggle').textContent = t.langToggle;
+  document.getElementById('tab-btn-finder').textContent = t.tabFinder;
+  document.getElementById('tab-btn-manuals').textContent = t.tabManuals;
+  document.getElementById('label-width').textContent = t.labelWidth;
+  document.getElementById('label-depth').textContent = t.labelDepth;
+  document.getElementById('label-height').textContent = t.labelHeight;
+  document.getElementById('title-size-files').textContent = t.titleSizeFiles;
+  document.getElementById('title-hardware').textContent = t.titleHardware;
+  document.getElementById('summary-universal').textContent = t.summaryUniversal;
+
+  document.getElementById('mbtn-02').textContent = t.mbtn02;
+  document.getElementById('mbtn-03').textContent = t.mbtn03;
+  document.getElementById('mbtn-04').textContent = t.mbtn04;
+  document.getElementById('mbtn-05').textContent = t.mbtn05;
+  document.getElementById('mbtn-01').textContent = t.mbtn01;
+}
+
+function toggleLanguage() {
+  currentLang = currentLang === 'en' ? 'zh' : 'en';
+  updateStaticText();
+  populateDropdowns();
+  renderList();
+}
+
+function switchTab(tabName, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  
+  btn.classList.add('active');
+  document.getElementById(`tab-${tabName}`).classList.add('active');
+}
+
+function loadPdf(pdfFilename, btn) {
+  document.querySelectorAll('.manual-link-btn').forEach(b => b.classList.remove('active-doc'));
+  if (btn) {
+    btn.classList.add('active-doc');
+  }
+  document.getElementById('pdf-frame').src = encodeURI(pdfFilename) + '#view=FitH&toolbar=1';
+}
+
+function renderList() {
+  const w = document.getElementById('width').value || 'S';
+  const d = document.getElementById('depth').value || '3';
+  const h = document.getElementById('height').value || '1F';
+  const wd = `${w}${d}`;
+  const famPrefix = w === 'S' ? '01. S Families' :
+                    w === 'M' ? '02. M Families' :
+                    w === 'L' ? '03. L Families' : '05. XL Families';
+  const t = i18n[currentLang];
+
+  const sizeItems = [
+    {
+      name: `${wd} Module ${h}.stl`,
+      path: `01. DRAWERS/${famPrefix}/${wd}/Modules/${wd} Module ${h}.stl`,
+      qty: "x1"
+    },
+    {
+      name: `${wd} Box ${h}.stl`,
+      path: `01. DRAWERS/${famPrefix}/${wd}/Boxes/${wd} Box ${h}.stl`,
+      qty: "x1"
+    },
+    {
+      name: `${w}${h} (Turn On Supports).stl`,
+      path: `01. DRAWERS/${famPrefix}/Facades/${w}${h} (Turn On Supports).stl`,
+      qty: "x1"
+    },
+    {
+      name: `${w} Geared Rail.stl`,
+      path: `01. DRAWERS/07. Universal/Geared Rails/${w} Geared Rail.stl`,
+      qty: "x2"
+    },
+    {
+      name: `${wd} Grid Roof.stl ${t.topTierNote}`,
+      path: `01. DRAWERS/${famPrefix}/${wd}/Roofs/${wd} Grid Roof.stl`,
+      qty: t.qtyTopTier
+    }
+  ];
+
+  document.getElementById('size-files').innerHTML = sizeItems.map(item => `
+    <li class="file-card">
+      <div class="file-info">
+        <a class="file-name" href="${encodeURI(item.path)}" download>${item.name}</a>
+        <span class="file-path">${item.path}</span>
+      </div>
+      <span class="qty-tag">${item.qty}</span>
+    </li>
+  `).join('');
+
+  const boltCount = h === '1F' ? '4' : '6';
+  document.getElementById('hardware-spec').innerHTML = t.boltText(boltCount);
+}
+
+// Initial setup
+populateDropdowns();
+updateStaticText();
+renderList();
+</script>
+</body>
+</html>
