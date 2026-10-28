@@ -33,6 +33,16 @@
       font-size: 20px;
       color: #58a6ff;
     }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .author-tag {
+      font-size: 13px;
+      color: #8b949e;
+      font-weight: 500;
+    }
     .lang-btn {
       background: #21262d;
       border: 1px solid #30363d;
@@ -82,7 +92,7 @@
     }
     .selectors {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 16px;
       margin-bottom: 24px;
     }
@@ -169,9 +179,10 @@
       background: #0d1117;
       border: 1px solid #30363d;
       border-radius: 8px;
-      padding: 12px 16px;
+      padding: 14px 18px;
       font-size: 14px;
       color: #c9d1d9;
+      line-height: 1.6;
     }
     details {
       margin-top: 24px;
@@ -196,7 +207,6 @@
       margin-bottom: 14px;
     }
 
-    /* Key Group Card */
     .group-card {
       background: #161b22;
       border: 1px solid #30363d;
@@ -228,7 +238,6 @@
       border-left: 2px solid #30363d;
     }
 
-    /* Roof Visual Card Styles */
     .roof-gallery {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -259,9 +268,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-    }
-    .roof-card .file-name {
-      font-size: 13px;
     }
     .roof-desc {
       font-size: 12px;
@@ -311,10 +317,10 @@
 <div class="container">
   <div class="header">
     <h2 id="ui-title">VAULT_USSA Project Hub</h2>
-    <div style="display: flex; align-items: center; gap: 16px;">
-    <span id="ui-author" style="font-size: 13px; color: #8b949e;">by kl with❤️</span>
-    <button class="lang-btn" id="lang-toggle" onclick="toggleLanguage()">中文</button>
-  </div>
+    <div class="header-right">
+      <span class="author-tag" id="ui-author">by:kl wi ❤️</span>
+      <button class="lang-btn" id="lang-toggle" onclick="toggleLanguage()">中文</button>
+    </div>
   </div>
 
   <nav class="nav-tabs">
@@ -325,6 +331,10 @@
   <!-- TAB 1: FILE RESOLVER -->
   <div id="tab-finder" class="tab-content active">
     <div class="selectors">
+      <div>
+        <label for="module-type" id="label-type">Module Type</label>
+        <select id="module-type" onchange="renderList()"></select>
+      </div>
       <div>
         <label for="width" id="label-width">Width Family</label>
         <select id="width" onchange="renderList()"></select>
@@ -339,22 +349,22 @@
       </div>
     </div>
 
-    <!-- 1. SIZE-SPECIFIC (VISIBLE) -->
+    <!-- 1. SIZE-SPECIFIC -->
     <div class="section-title" id="title-size-files">1. Size-Specific Files To Print</div>
     <ul class="item-list" id="size-files"></ul>
 
-    <!-- 2. UNIVERSAL (COLLAPSED BY DEFAULT) -->
+    <!-- 2. UNIVERSAL / MECHANISM -->
     <details>
       <summary id="title-universal">2. Universal Mechanism Files (Click to Expand)</summary>
       <ul class="item-list" id="universal-files"></ul>
     </details>
 
-    <!-- 3. FASTENERS (VISIBLE) -->
+    <!-- 3. FASTENERS -->
     <div class="section-title" id="title-hardware">3. Fasteners Required</div>
     <div class="hardware-card" id="hardware-spec"></div>
 
-    <!-- 4. ROOFS (COLLAPSED BY DEFAULT WITH PICTURES) -->
-    <details>
+    <!-- 4. ROOFS (DRAWER ONLY) -->
+    <details id="roof-details-section">
       <summary id="title-roof-files">4. Roof Options (Top Tier Only - Click to Expand)</summary>
       <ul class="roof-gallery" id="roof-files"></ul>
     </details>
@@ -379,26 +389,34 @@ let currentLang = 'en';
 const i18n = {
   en: {
     title: "VAULT_USSA Project Hub",
+    author: "by:kl wi ❤️",
     langToggle: "中文",
     tabFinder: "Component Finder",
     tabManuals: "Assembly Manuals",
+    labelType: "Module Type",
     labelWidth: "Width Family",
     labelDepth: "Depth (Gridfinity Units)",
     labelHeight: "Height",
     titleSizeFiles: "1. Size-Specific Files To Print",
-    titleUniversal: "2. Universal Mechanism Files (Click to Expand)",
+    titleUniversalDrawer: "2. Universal Mechanism Files (Click to Expand)",
+    titleUniversalSustainer: "2. Sustainer Latch & Hinge Hardware (Click to Expand)",
     titleHardware: "3. Fasteners Required",
     titleRoofFiles: "4. Roof Options (Top Tier Only - Click to Expand)",
-    keyGroupTitle: "Key Lock Options (Choose Standard or Hidden, Needs to enable Support)",
+    keyGroupTitle: "Key Lock Options (Choose Standard or Hidden)",
     keyGroupNote: "Choose 1 style per drawer",
     keyStandardDesc: "Standard exposed key lock",
     keyHiddenDesc: "Flush hidden pull-out key (Parts 1 + 2)",
-    boltText: (count) => `<strong>M4 x 14mm bolts:</strong> x${count} per drawer`,
+    boltTextDrawer: (count) => `<strong>M4 x 14mm bolts:</strong> x${count} per drawer (${count === 4 ? 'standard 1F' : 'extended 2F/4F'})`,
+    boltTextSustainer: `<strong>Per Sustainer Module:</strong><br>• M4 x 10mm bolts: x8<br>• M4 x 14mm bolts: x16<br>• M4 x 20mm bolts: x7`,
     mbtn02: "Drawer Assembly",
     mbtn03: "Sustainers Assembly",
     mbtn04: "Modifications",
     mbtn05: "Mounting Instructions",
     mbtn01: "Full Instructions Manual",
+    typeOptions: [
+      { val: 'drawers', text: 'Drawers (01. DRAWERS)' },
+      { val: 'sustainers', text: 'Sustainers (02. SUSTAINERS)' }
+    ],
     widthOptions: [
       { val: 'S', text: 'S (Small)' },
       { val: 'M', text: 'M (Medium)' },
@@ -426,27 +444,35 @@ const i18n = {
     }
   },
   zh: {
-    title: "VAULT USSA 打印控制台",
+    title: "VAULT_USSA 打印控制台",
+    author: "by:kl wi ❤️",
     langToggle: "English",
     tabFinder: "组件查找器",
     tabManuals: "组装说明书",
+    labelType: "结构类型 (Type)",
     labelWidth: "宽度规格 (Width)",
     labelDepth: "深度规格 (Gridfinity 单元)",
     labelHeight: "层高 (Height)",
     titleSizeFiles: "1. 当前尺寸对应待打印文件",
-    titleUniversal: "2. 通用结构件 (点击展开)",
+    titleUniversalDrawer: "2. 通用结构件 (点击展开)",
+    titleUniversalSustainer: "2. 工具箱锁扣与合页五金结构 (点击展开)",
     titleHardware: "3. 所需五金螺丝",
     titleRoofFiles: "4. 顶盖选项 (仅最顶层需要 - 点击展开)",
-    keyGroupTitle: "抽屉锁匙套件 (标准锁或隐藏锁二选一, 需要开启支撑)",
+    keyGroupTitle: "抽屉锁匙套件 (标准锁或隐藏锁二选一)",
     keyGroupNote: "每层抽屉选一种规格",
     keyStandardDesc: "标准外露式旋转锁匙",
     keyHiddenDesc: "隐藏式抽拉锁匙 (需打印零件 1 + 2)",
-    boltText: (count) => `<strong>M4 x 14mm 螺丝:</strong> 每层抽屉需 ${count} 颗`,
+    boltTextDrawer: (count) => `<strong>M4 x 14mm 螺丝:</strong> 每层抽屉需 ${count} 颗 (${count === 4 ? '1F 单层' : '2F/4F 双倍及加高层'})`,
+    boltTextSustainer: `<strong>每个工具箱模块所需螺丝:</strong><br>• M4 x 10mm 螺丝: 8 颗<br>• M4 x 14mm 螺丝: 16 颗<br>• M4 x 20mm 螺丝: 7 颗`,
     mbtn02: "抽屉组装指南 (02)",
-    mbtn03: "工具箱组装指南 (03)",
+    mbtn03: "翻盖箱组装指南 (03)",
     mbtn04: "扩展改装部件 (04)",
     mbtn05: "安装固定说明 (05)",
     mbtn01: "完整系统手册 (01)",
+    typeOptions: [
+      { val: 'drawers', text: '滑轨抽屉系统 (01. DRAWERS)' },
+      { val: 'sustainers', text: '翻盖工具箱系统 (02. SUSTAINERS)' }
+    ],
     widthOptions: [
       { val: 'S', text: 'S (小号)' },
       { val: 'M', text: 'M (中号)' },
@@ -476,11 +502,15 @@ const i18n = {
 };
 
 function populateDropdowns() {
+  const curType = document.getElementById('module-type').value || 'drawers';
   const curW = document.getElementById('width').value || 'S';
   const curD = document.getElementById('depth').value || '3';
   const curH = document.getElementById('height').value || '1F';
 
   const texts = i18n[currentLang];
+
+  const typeSelect = document.getElementById('module-type');
+  typeSelect.innerHTML = texts.typeOptions.map(o => `<option value="${o.val}" ${o.val===curType?'selected':''}>${o.text}</option>`).join('');
 
   const wSelect = document.getElementById('width');
   wSelect.innerHTML = texts.widthOptions.map(o => `<option value="${o.val}" ${o.val===curW?'selected':''}>${o.text}</option>`).join('');
@@ -495,14 +525,15 @@ function populateDropdowns() {
 function updateStaticText() {
   const t = i18n[currentLang];
   document.getElementById('ui-title').textContent = t.title;
+  document.getElementById('ui-author').textContent = t.author;
   document.getElementById('lang-toggle').textContent = t.langToggle;
   document.getElementById('tab-btn-finder').textContent = t.tabFinder;
   document.getElementById('tab-btn-manuals').textContent = t.tabManuals;
+  document.getElementById('label-type').textContent = t.labelType;
   document.getElementById('label-width').textContent = t.labelWidth;
   document.getElementById('label-depth').textContent = t.labelDepth;
   document.getElementById('label-height').textContent = t.labelHeight;
   document.getElementById('title-size-files').textContent = t.titleSizeFiles;
-  document.getElementById('title-universal').textContent = t.titleUniversal;
   document.getElementById('title-hardware').textContent = t.titleHardware;
   document.getElementById('title-roof-files').textContent = t.titleRoofFiles;
 
@@ -536,151 +567,111 @@ function loadPdf(pdfFilename, btn) {
   document.getElementById('pdf-frame').src = encodeURI(pdfFilename) + '#view=FitH&toolbar=1';
 }
 
+function buildCards(list) {
+  return list.map(item => `
+    <li class="file-card">
+      <div class="file-info">
+        <a class="file-name" href="${encodeURI(item.path)}" download>${item.name}</a>
+        <span class="file-path">${item.path}</span>
+      </div>
+      <span class="qty-tag">${item.qty}</span>
+    </li>
+  `).join('');
+}
+
 function renderList() {
+  const type = document.getElementById('module-type').value || 'drawers';
   const w = document.getElementById('width').value || 'S';
   const d = document.getElementById('depth').value || '3';
   const h = document.getElementById('height').value || '1F';
   const wd = `${w}${d}`;
+  const t = i18n[currentLang];
+
   const famPrefix = w === 'S' ? '01. S Families' :
                     w === 'M' ? '02. M Families' :
                     w === 'L' ? '03. L Families' : '05. XL Families';
-  const t = i18n[currentLang];
 
-  const runnerPrefix = (w === 'XL') ? `XL${d}` : `x${d}`;
+  if (type === 'drawers') {
+    document.getElementById('roof-details-section').style.display = 'block';
+    document.getElementById('title-universal').textContent = t.titleUniversalDrawer;
 
-  // 1. Size-Specific Files
-  const sizeItems = [
-    {
-      name: `${wd} Module ${h}.stl`,
-      path: `01. DRAWERS/${famPrefix}/${wd}/Modules/${wd} Module ${h}.stl`,
-      qty: "x1"
-    },
-    {
-      name: `${wd} Box ${h}.stl`,
-      path: `01. DRAWERS/${famPrefix}/${wd}/Boxes/${wd} Box ${h}.stl`,
-      qty: "x1"
-    },
-    {
-      name: `${w}${h} (Turn On Supports).stl`,
-      path: `01. DRAWERS/${famPrefix}/Facades/${w}${h} (Turn On Supports).stl`,
-      qty: "x1"
-    },
-    {
-      name: `${w} Rails.stl`,
-      path: `01. DRAWERS/07. Universal/Geared Rails/${w} Rails.stl`,
-      qty: "x2"
-    },
-    {
-      name: `${runnerPrefix} Runner Guide.stl`,
-      path: `01. DRAWERS/07. Universal/Runners/${runnerPrefix} Runner Guide.stl`,
-      qty: "x2"
-    },
-    {
-      name: `${runnerPrefix} Runner Slide.stl`,
-      path: `01. DRAWERS/07. Universal/Runners/${runnerPrefix} Runner Slide.stl`,
-      qty: "x2"
-    }
-  ];
+    const runnerPrefix = (w === 'XL') ? `XL${d}` : `x${d}`;
 
-  // 2. Universal Mechanism Files (General Items)
-  const universalItems = [
-    { name: "Runner Stopper.stl", path: "01. DRAWERS/07. Universal/Runners/Runner Stopper.stl", qty: "x2" },
-    { name: "Latch.stl", path: "01. DRAWERS/07. Universal/Latch.stl", qty: "x1" },
-    { name: "Springs.stl", path: "01. DRAWERS/07. Universal/Springs.stl", qty: "x2" },
-    { name: "Key Lock.stl", path: "01. DRAWERS/07. Universal/Key Lock.stl", qty: "x1" },
-    { name: "Key Cap.stl", path: "01. DRAWERS/07. Universal/Key Cap.stl", qty: "x1" },
-    { name: "Facade Cap.stl", path: "01. DRAWERS/07. Universal/Facade Cap.stl", qty: "x1" },
-    { name: "Label.stl", path: "01. DRAWERS/07. Universal/Label.stl", qty: "x1" }
-  ];
+    const sizeItems = [
+      { name: `${wd} Module ${h}.stl`, path: `01. DRAWERS/${famPrefix}/${wd}/Modules/${wd} Module ${h}.stl`, qty: "x1" },
+      { name: `${wd} Box ${h}.stl`, path: `01. DRAWERS/${famPrefix}/${wd}/Boxes/${wd} Box ${h}.stl`, qty: "x1" },
+      { name: `${w}${h} (Turn On Supports).stl`, path: `01. DRAWERS/${famPrefix}/Facades/${w}${h} (Turn On Supports).stl`, qty: "x1" },
+      { name: `${w} Rails.stl`, path: `01. DRAWERS/07. Universal/Geared Rails/${w} Rails.stl`, qty: "x2" },
+      { name: `${runnerPrefix} Runner Guides.stl`, path: `01. DRAWERS/07. Universal/Runners/${runnerPrefix} Runner Guide.stl`, qty: "x2" },
+      { name: `${runnerPrefix} Runner Slides.stl`, path: `01. DRAWERS/07. Universal/Runners/${runnerPrefix} Runner Slide.stl`, qty: "x2" }
+    ];
 
-  // 2b. Universal Key Group (Hidden vs Standard)
-  const keyGroupHtml = `
-    <li class="group-card">
-      <div class="group-header">
-        <span class="group-title">${t.keyGroupTitle}</span>
-        <span class="qty-tag">${t.keyGroupNote}</span>
-      </div>
-      <div class="group-sub-item">
-        <div class="file-info">
-          <a class="file-name" href="01.%20DRAWERS/07.%20Universal/Key%20(Turn%20On%20Supports).stl" download>Key (Turn On Supports).stl</a>
-          <span class="file-path">01. DRAWERS/07. Universal/Key (Turn On Supports).stl — <em>${t.keyStandardDesc}</em></span>
+    const universalItems = [
+      { name: "Runner Stopper.stl", path: "01. DRAWERS/07. Universal/Runners/Runner Stopper.stl", qty: "x2" },
+      { name: "Latch.stl", path: "01. DRAWERS/07. Universal/Latch.stl", qty: "x1" },
+      { name: "Springs.stl", path: "01. DRAWERS/07. Universal/Springs.stl", qty: "x2" },
+      { name: "Key Lock.stl", path: "01. DRAWERS/07. Universal/Key Lock.stl", qty: "x1" },
+      { name: "Key Cap.stl", path: "01. DRAWERS/07. Universal/Key Cap.stl", qty: "x1" },
+      { name: "Facade Cap.stl", path: "01. DRAWERS/07. Universal/Facade Cap.stl", qty: "x1" },
+      { name: "Label.stl", path: "01. DRAWERS/07. Universal/Label.stl", qty: "x1" }
+    ];
+
+    const keyGroupHtml = `
+      <li class="group-card">
+        <div class="group-header">
+          <span class="group-title">${t.keyGroupTitle}</span>
+          <span class="qty-tag">${t.keyGroupNote}</span>
         </div>
-        <span class="qty-tag">x1</span>
-      </div>
-      <div class="group-sub-item">
-        <div class="file-info">
-          <a class="file-name" href="01.%20DRAWERS/07.%20Universal/Hidden%20Key%20(Turn%20On%20Supports).stl" download>Hidden Key (Turn On Supports).stl</a>
-          <span class="file-path">01. DRAWERS/07. Universal/Hidden Key (Turn On Supports).stl — <em>${t.keyHiddenDesc}</em></span>
+        <div class="group-sub-item">
+          <div class="file-info">
+            <a class="file-name" href="01.%20DRAWERS/07.%20Universal/Key%20(Turn%20On%20Supports).stl" download>Key (Turn On Supports).stl</a>
+            <span class="file-path">01. DRAWERS/07. Universal/Key (Turn On Supports).stl — <em>${t.keyStandardDesc}</em></span>
+          </div>
+          <span class="qty-tag">x1</span>
         </div>
-        <span class="qty-tag">x1</span>
-      </div>
-      <div class="group-sub-item">
-        <div class="file-info">
-          <a class="file-name" href="01.%20DRAWERS/07.%20Universal/Hidden%20Key%20Part%202%20(Turn%20on%20Supports).stl" download>Hidden Key Part 2 (Turn on Supports).stl</a>
-          <span class="file-path">01. DRAWERS/07. Universal/Hidden Key Part 2 (Turn on Supports).stl</span>
+        <div class="group-sub-item">
+          <div class="file-info">
+            <a class="file-name" href="01.%20DRAWERS/07.%20Universal/Hidden%20Key%20(Turn%20On%20Supports).stl" download>Hidden Key (Turn On Supports).stl</a>
+            <span class="file-path">01. DRAWERS/07. Universal/Hidden Key (Turn On Supports).stl — <em>${t.keyHiddenDesc}</em></span>
+          </div>
+          <span class="qty-tag">x1</span>
         </div>
-        <span class="qty-tag">x1</span>
-      </div>
-    </li>
-  `;
-
-  // 4. Roof Gallery Items with SVGs
-  const svgGrid = `<svg width="140" height="70" viewBox="0 0 140 70" fill="none"><rect x="10" y="24" width="120" height="34" rx="4" fill="#21262d" stroke="#58a6ff" stroke-width="1.5"/><rect x="20" y="16" width="30" height="12" rx="2" fill="#30363d" stroke="#58a6ff"/><rect x="56" y="16" width="30" height="12" rx="2" fill="#30363d" stroke="#58a6ff"/><rect x="92" y="16" width="30" height="12" rx="2" fill="#30363d" stroke="#58a6ff"/><line x1="20" y1="40" x2="120" y2="40" stroke="#388bfd" stroke-dasharray="2 2"/></svg>`;
-  const svgTable = `<svg width="140" height="70" viewBox="0 0 140 70" fill="none"><rect x="10" y="24" width="120" height="34" rx="4" fill="#21262d" stroke="#7ee787" stroke-width="1.5"/><rect x="14" y="28" width="112" height="6" rx="2" fill="#30363d"/></svg>`;
-  const svgHeavy = `<svg width="140" height="70" viewBox="0 0 140 70" fill="none"><rect x="10" y="28" width="120" height="30" rx="4" fill="#21262d" stroke="#f0883e" stroke-width="1.5"/><rect x="16" y="14" width="28" height="22" rx="3" fill="#30363d" stroke="#f0883e"/><rect x="96" y="14" width="28" height="22" rx="3" fill="#30363d" stroke="#f0883e"/><rect x="48" y="18" width="44" height="8" rx="4" fill="#f0883e"/></svg>`;
-  const svgBowl = `<svg width="140" height="70" viewBox="0 0 140 70" fill="none"><rect x="10" y="24" width="120" height="34" rx="4" fill="#21262d" stroke="#d2a8ff" stroke-width="1.5"/><path d="M18 30 Q70 50 122 30" stroke="#d2a8ff" stroke-width="2" fill="#161b22"/></svg>`;
-  const svgMount = `<svg width="140" height="70" viewBox="0 0 140 70" fill="none"><rect x="10" y="18" width="120" height="38" rx="4" fill="#21262d" stroke="#8b949e" stroke-width="1.5"/><circle cx="28" cy="30" r="3" fill="#58a6ff"/><circle cx="112" cy="30" r="3" fill="#58a6ff"/><circle cx="70" cy="42" r="3" fill="#58a6ff"/><line x1="20" y1="18" x2="120" y2="18" stroke="#f0883e" stroke-width="2"/></svg>`;
-
-  const roofCards = [
-    {
-      name: `${wd} Grid Roof.stl`,
-      path: `01. DRAWERS/${famPrefix}/${wd}/Roofs/${wd} Grid Roof.stl`,
-      svg: svgGrid,
-      desc: t.roofDescriptions.grid
-    },
-    {
-      name: `${wd} Table Roof.stl`,
-      path: `01. DRAWERS/${famPrefix}/${wd}/Roofs/${wd} Table Roof.stl`,
-      svg: svgTable,
-      desc: t.roofDescriptions.table
-    },
-    {
-      name: `${wd} Bowl Roof.stl`,
-      path: `01. DRAWERS/${famPrefix}/${wd}/Roofs/${wd} Bowl Roof.stl`,
-      svg: svgBowl,
-      desc: t.roofDescriptions.bowl
-    },
-    {
-      name: `${wd} Under Table Mount Roof.stl`,
-      path: `01. DRAWERS/${famPrefix}/${wd}/Roofs/${wd} Under Table Mount Roof.stl`,
-      svg: svgMount,
-      desc: t.roofDescriptions.mount
-    }
-  ];
-
-  if (w === 'L' || w === 'XL') {
-    roofCards.splice(2, 0, {
-      name: `${wd} Heavyweight Roof.stl`,
-      path: `01. DRAWERS/${famPrefix}/${wd}/Roofs/${wd} Heavyweight Roof.stl`,
-      svg: svgHeavy,
-      desc: t.roofDescriptions.heavyweight
-    });
-  }
-
-  function buildCards(list) {
-    return list.map(item => `
-      <li class="file-card">
-        <div class="file-info">
-          <a class="file-name" href="${encodeURI(item.path)}" download>${item.name}</a>
-          <span class="file-path">${item.path}</span>
+        <div class="group-sub-item">
+          <div class="file-info">
+            <a class="file-name" href="01.%20DRAWERS/07.%20Universal/Hidden%20Key%20Part%202%20(Turn%20on%20Supports).stl" download>Hidden Key Part 2 (Turn on Supports).stl</a>
+            <span class="file-path">01. DRAWERS/07. Universal/Hidden Key Part 2 (Turn on Supports).stl</span>
+          </div>
+          <span class="qty-tag">x1</span>
         </div>
-        <span class="qty-tag">${item.qty}</span>
       </li>
-    `).join('');
-  }
+    `;
 
-  function buildRoofCards(list) {
-    return list.map(item => `
+    // Roof Gallery
+    const svgGrid = `<svg width="140" height="70" viewBox="0 0 140 70" fill="none"><rect x="10" y="24" width="120" height="34" rx="4" fill="#21262d" stroke="#58a6ff" stroke-width="1.5"/><rect x="20" y="16" width="30" height="12" rx="2" fill="#30363d" stroke="#58a6ff"/><rect x="56" y="16" width="30" height="12" rx="2" fill="#30363d" stroke="#58a6ff"/><rect x="92" y="16" width="30" height="12" rx="2" fill="#30363d" stroke="#58a6ff"/><line x1="20" y1="40" x2="120" y2="40" stroke="#388bfd" stroke-dasharray="2 2"/></svg>`;
+    const svgTable = `<svg width="140" height="70" viewBox="0 0 140 70" fill="none"><rect x="10" y="24" width="120" height="34" rx="4" fill="#21262d" stroke="#7ee787" stroke-width="1.5"/><rect x="14" y="28" width="112" height="6" rx="2" fill="#30363d"/></svg>`;
+    const svgHeavy = `<svg width="140" height="70" viewBox="0 0 140 70" fill="none"><rect x="10" y="28" width="120" height="30" rx="4" fill="#21262d" stroke="#f0883e" stroke-width="1.5"/><rect x="16" y="14" width="28" height="22" rx="3" fill="#30363d" stroke="#f0883e"/><rect x="96" y="14" width="28" height="22" rx="3" fill="#30363d" stroke="#f0883e"/><rect x="48" y="18" width="44" height="8" rx="4" fill="#f0883e"/></svg>`;
+    const svgBowl = `<svg width="140" height="70" viewBox="0 0 140 70" fill="none"><rect x="10" y="24" width="120" height="34" rx="4" fill="#21262d" stroke="#d2a8ff" stroke-width="1.5"/><path d="M18 30 Q70 50 122 30" stroke="#d2a8ff" stroke-width="2" fill="#161b22"/></svg>`;
+    const svgMount = `<svg width="140" height="70" viewBox="0 0 140 70" fill="none"><rect x="10" y="18" width="120" height="38" rx="4" fill="#21262d" stroke="#8b949e" stroke-width="1.5"/><circle cx="28" cy="30" r="3" fill="#58a6ff"/><circle cx="112" cy="30" r="3" fill="#58a6ff"/><circle cx="70" cy="42" r="3" fill="#58a6ff"/><line x1="20" y1="18" x2="120" y2="18" stroke="#f0883e" stroke-width="2"/></svg>`;
+
+    const roofCards = [
+      { name: `${wd} Grid Roof.stl`, path: `01. DRAWERS/${famPrefix}/${wd}/Roofs/${wd} Grid Roof.stl`, svg: svgGrid, desc: t.roofDescriptions.grid },
+      { name: `${wd} Table Roof.stl`, path: `01. DRAWERS/${famPrefix}/${wd}/Roofs/${wd} Table Roof.stl`, svg: svgTable, desc: t.roofDescriptions.table },
+      { name: `${wd} Bowl Roof.stl`, path: `01. DRAWERS/${famPrefix}/${wd}/Roofs/${wd} Bowl Roof.stl`, svg: svgBowl, desc: t.roofDescriptions.bowl },
+      { name: `${wd} Under Table Mount Roof.stl`, path: `01. DRAWERS/${famPrefix}/${wd}/Roofs/${wd} Under Table Mount Roof.stl`, svg: svgMount, desc: t.roofDescriptions.mount }
+    ];
+
+    if (w === 'L' || w === 'XL') {
+      roofCards.splice(2, 0, {
+        name: `${wd} Heavyweight Roof.stl`,
+        path: `01. DRAWERS/${famPrefix}/${wd}/Roofs/${wd} Heavyweight Roof.stl`,
+        svg: svgHeavy,
+        desc: t.roofDescriptions.heavyweight
+      });
+    }
+
+    document.getElementById('size-files').innerHTML = buildCards(sizeItems);
+    document.getElementById('universal-files').innerHTML = buildCards(universalItems) + keyGroupHtml;
+    document.getElementById('roof-files').innerHTML = roofCards.map(item => `
       <li class="roof-card">
         <div class="roof-visual-box">${item.svg}</div>
         <div class="file-info">
@@ -690,15 +681,57 @@ function renderList() {
         <p class="roof-desc">${item.desc}</p>
       </li>
     `).join('');
+
+    const boltCount = h === '1F' ? 4 : 6;
+    document.getElementById('hardware-spec').innerHTML = t.boltTextDrawer(boltCount);
+
+   } else {
+    // SUSTAINERS MODE (02. SUSTAINERS)
+    document.getElementById('roof-details-section').style.display = 'none';
+    document.getElementById('title-universal').textContent = t.titleUniversalSustainer;
+
+    // In 02. SUSTAINERS, XL is "04. XL Families"
+    const famPrefix = w === 'S' ? '01. S Families' :
+                      w === 'M' ? '02. M Families' :
+                      w === 'L' ? '03. L Families' : '04. XL Families';
+
+    const hingeGroup = (w === 'S' || w === 'M') ? 'S-M' : 'L-XL';
+
+    // Matches: 02. SUSTAINERS/[Family]/[Size]/Modules/[WD] [Height] Module.stl
+    const sustainerSizeItems = [
+      {
+        name: `${wd} ${h} Module.stl`,
+        path: `02. SUSTAINERS/${famPrefix}/${wd}/Modules/${wd} ${h} Module.stl`,
+        qty: "x1"
+      },
+      {
+        name: `${wd} Roof.stl`,
+        path: `02. SUSTAINERS/${famPrefix}/${wd}/Roofs/${wd} Roof.stl`,
+        qty: "x1"
+      },
+      {
+        name: `${w}${h} Facade.stl`,
+        path: `02. SUSTAINERS/${famPrefix}/Facades/${w}${h} Facade.stl`,
+        qty: "x1"
+      }
+    ];
+
+    // In 02. SUSTAINERS, Universal is "05. Universal"
+    const sustainerUniversalItems = [
+      { name: "Lock Holder.stl", path: "02. SUSTAINERS/05. Universal/Locks/Lock Holder.stl", qty: "x2" },
+      { name: "Lock Inner Part.stl", path: "02. SUSTAINERS/05. Universal/Locks/Lock Inner Part.stl", qty: "x2" },
+      { name: `Lock Outer Part ${h}.stl`, path: `02. SUSTAINERS/05. Universal/Locks/Lock Outer Part ${h}.stl`, qty: "x2" },
+      { name: `${hingeGroup} ${h === '1F' ? '1F' : '2-4F'} Hinge.stl`, path: `02. SUSTAINERS/05. Universal/Hinges/${hingeGroup} ${h === '1F' ? '1F' : '2-4F'} Hinge.stl`, qty: "x2" },
+      { name: `${hingeGroup} Hinge Top.stl`, path: `02. SUSTAINERS/05. Universal/Hinges/${hingeGroup} Hinge Top.stl`, qty: "x2" },
+      { name: `${hingeGroup} Rods.stl`, path: `02. SUSTAINERS/05. Universal/Hinges/${hingeGroup} Rods.stl`, qty: "x2" },
+      { name: "Label for Sustainers.stl", path: "02. SUSTAINERS/05. Universal/Label for Sustainers.stl", qty: "x1" }
+    ];
+
+    document.getElementById('size-files').innerHTML = buildCards(sustainerSizeItems);
+    document.getElementById('universal-files').innerHTML = buildCards(sustainerUniversalItems);
+    document.getElementById('hardware-spec').innerHTML = t.boltTextSustainer;
   }
 
-  document.getElementById('size-files').innerHTML = buildCards(sizeItems);
-  document.getElementById('universal-files').innerHTML = buildCards(universalItems) + keyGroupHtml;
-  document.getElementById('roof-files').innerHTML = buildRoofCards(roofCards);
-
-  // 3. Fasteners calculation
-  const boltCount = h === '1F' ? '4' : '6';
-  document.getElementById('hardware-spec').innerHTML = t.boltText(boltCount);
 }
 
 // Initial setup
