@@ -363,9 +363,15 @@
     <div class="section-title" id="title-hardware">3. Fasteners Required</div>
     <div class="hardware-card" id="hardware-spec"></div>
 
-    <!-- 4. ROOFS (DRAWER ONLY) -->
+    <!-- 4. STAND-ALONE INTERIOR ORGANIZERS (INSERT THIS) -->
+    <details id="interior-details-section">
+      <summary id="title-interior">4. Interior Organizers (Baseplate & Grid Dividers - Click to Expand)</summary>
+      <ul class="item-list" id="interior-files"></ul>
+    </details>
+
+    <!-- 5. ROOFS (DRAWER ONLY) -->
     <details id="roof-details-section">
-      <summary id="title-roof-files">4. Roof Options (Top Tier Only - Click to Expand)</summary>
+      <summary id="title-roof-files">5. Roof Options (Top Tier Only - Click to Expand)</summary>
       <ul class="roof-gallery" id="roof-files"></ul>
     </details>
   </div>
@@ -401,11 +407,14 @@ const i18n = {
     titleUniversalDrawer: "2. Universal Mechanism Files (Click to Expand)",
     titleUniversalSustainer: "2. Sustainer Latch & Hinge Hardware (Click to Expand)",
     titleHardware: "3. Fasteners Required",
-    titleRoofFiles: "4. Roof Options (Top Tier Only - Click to Expand)",
+    titleInterior: "4. Interior Organizers: Baseplate & Grid Dividers (Click to Expand)",
+    titleRoofFiles: "5. Roof Options (Top Tier Only - Click to Expand)",
     keyGroupTitle: "Key Lock Options (Choose Standard or Hidden)",
     keyGroupNote: "Choose 1 style per drawer",
     keyStandardDesc: "Standard exposed key lock",
     keyHiddenDesc: "Flush hidden pull-out key (Parts 1 + 2)",
+    dividerGroupTitle: "Interlocking Grid Dividers",
+    dividerGroupNote: "Optional internal compartments",
     boltTextDrawer: (count) => `<strong>M4 x 14mm bolts:</strong> x${count} per drawer (${count === 4 ? 'standard 1F' : 'extended 2F/4F'})`,
     boltTextSustainer: `<strong>Per Sustainer Module:</strong><br>• M4 x 10mm bolts: x8<br>• M4 x 14mm bolts: x16<br>• M4 x 20mm bolts: x7`,
     mbtn02: "Drawer Assembly",
@@ -457,11 +466,14 @@ const i18n = {
     titleUniversalDrawer: "2. 通用结构件 (点击展开)",
     titleUniversalSustainer: "2. 工具箱锁扣与合页五金结构 (点击展开)",
     titleHardware: "3. 所需五金螺丝",
-    titleRoofFiles: "4. 顶盖选项 (仅最顶层需要 - 点击展开)",
+    titleInterior: "4. 内部收纳配件: 底板与分隔离板 (点击展开)",
+    titleRoofFiles: "5. 顶盖选项 (仅最顶层需要 - 点击展开)",
     keyGroupTitle: "抽屉锁匙套件 (标准锁或隐藏锁二选一)",
     keyGroupNote: "每层抽屉选一种规格",
     keyStandardDesc: "标准外露式旋转锁匙",
     keyHiddenDesc: "隐藏式抽拉锁匙 (需打印零件 1 + 2)",
+    dividerGroupTitle: "格栅插接隔板系统 (Grid Dividers)",
+    dividerGroupNote: "可选内部自由分区",
     boltTextDrawer: (count) => `<strong>M4 x 14mm 螺丝:</strong> 每层抽屉需 ${count} 颗 (${count === 4 ? '1F 单层' : '2F/4F 双倍及加高层'})`,
     boltTextSustainer: `<strong>每个工具箱模块所需螺丝:</strong><br>• M4 x 10mm 螺丝: 8 颗<br>• M4 x 14mm 螺丝: 16 颗<br>• M4 x 20mm 螺丝: 7 颗`,
     mbtn02: "抽屉组装指南 (02)",
@@ -535,6 +547,7 @@ function updateStaticText() {
   document.getElementById('label-height').textContent = t.labelHeight;
   document.getElementById('title-size-files').textContent = t.titleSizeFiles;
   document.getElementById('title-hardware').textContent = t.titleHardware;
+  document.getElementById('title-interior').textContent = t.titleInterior;
   document.getElementById('title-roof-files').textContent = t.titleRoofFiles;
 
   document.getElementById('mbtn-02').textContent = t.mbtn02;
@@ -587,25 +600,30 @@ function renderList() {
   const wd = `${w}${d}`;
   const t = i18n[currentLang];
 
-  const famPrefix = w === 'S' ? '01. S Families' :
-                    w === 'M' ? '02. M Families' :
-                    w === 'L' ? '03. L Families' : '05. XL Families';
-
   if (type === 'drawers') {
     document.getElementById('roof-details-section').style.display = 'block';
     document.getElementById('title-universal').textContent = t.titleUniversalDrawer;
 
+    const famPrefix = w === 'S' ? '01. S Families' :
+                      w === 'M' ? '02. M Families' :
+                      w === 'L' ? '03. L Families' : '05. XL Families';
+
+    const runnerFolder = (w === 'XL') 
+      ? '01. DRAWERS/07. Universal/Runners/XL Runners' 
+      : '01. DRAWERS/07. Universal/Runners';
     const runnerPrefix = (w === 'XL') ? `XL${d}` : `x${d}`;
 
+    // 1. Size-Specific Files
     const sizeItems = [
       { name: `${wd} Module ${h}.stl`, path: `01. DRAWERS/${famPrefix}/${wd}/Modules/${wd} Module ${h}.stl`, qty: "x1" },
       { name: `${wd} Box ${h}.stl`, path: `01. DRAWERS/${famPrefix}/${wd}/Boxes/${wd} Box ${h}.stl`, qty: "x1" },
       { name: `${w}${h} (Turn On Supports).stl`, path: `01. DRAWERS/${famPrefix}/Facades/${w}${h} (Turn On Supports).stl`, qty: "x1" },
       { name: `${w} Rails.stl`, path: `01. DRAWERS/07. Universal/Geared Rails/${w} Rails.stl`, qty: "x2" },
-      { name: `${runnerPrefix} Runner Guides.stl`, path: `01. DRAWERS/07. Universal/Runners/${runnerPrefix} Runner Guide.stl`, qty: "x2" },
-      { name: `${runnerPrefix} Runner Slides.stl`, path: `01. DRAWERS/07. Universal/Runners/${runnerPrefix} Runner Slide.stl`, qty: "x2" }
+      { name: `${runnerPrefix} Runner Guide.stl`, path: `${runnerFolder}/${runnerPrefix} Runner Guide.stl`, qty: "x2" },
+      { name: `${runnerPrefix} Runner Slide.stl`, path: `${runnerFolder}/${runnerPrefix} Runner Slide.stl`, qty: "x2" }
     ];
 
+    // 2. Universal Mechanism Files
     const universalItems = [
       { name: "Runner Stopper.stl", path: "01. DRAWERS/07. Universal/Runners/Runner Stopper.stl", qty: "x2" },
       { name: "Latch.stl", path: "01. DRAWERS/07. Universal/Latch.stl", qty: "x1" },
@@ -646,7 +664,68 @@ function renderList() {
       </li>
     `;
 
-    // Roof Gallery
+    // 4. Stand-Alone Interior Organizers (Baseplate & Dividers)
+    const baseplateItem = [
+      {
+        name: `${wd} Baseplate.stl`,
+        path: `01. DRAWERS/${famPrefix}/${wd}/Baseplates/${wd} Baseplate.stl`,
+        qty: "x1"
+      }
+    ];
+
+    // Root directory for Grid Dividers
+    const gridDividersRoot = '01. DRAWERS/07. Universal/Grid Dividers';
+
+    // Height subfolder for the slats
+    const slatFolder = (h === '1F')
+      ? `${gridDividersRoot}/34.5MM TALL (full height of 1F drawers)`
+      : `${gridDividersRoot}/82.5MM TALL (full height of 2F drawers)`;
+
+    const widthSlatMap = { 'S': '10-S, x3.stl', 'M': '18-M, x5.stl', 'L': '26-L, x7.stl', 'XL': '26-L, x7.stl' };
+    const depthSlatMap = { '3': '10-S, x3.stl', '4': '14, x4.stl', '5': '18-M, x5.stl', '6': '22, x6.stl', '7': '26-L, x7.stl' };
+
+    const wSlat = widthSlatMap[w] || `${w}.stl`;
+    const dSlat = depthSlatMap[d] || `${d}.stl`;
+
+    const dividerGroupHtml = `
+      <li class="group-card">
+        <div class="group-header">
+          <span class="group-title">${t.dividerGroupTitle} (${h})</span>
+          <span class="qty-tag">${t.dividerGroupNote}</span>
+        </div>
+        <div class="group-sub-item">
+          <div class="file-info">
+            <a class="file-name" href="${encodeURI(slatFolder + '/' + wSlat)}" download>Width Slat: ${wSlat}</a>
+            <span class="file-path">${slatFolder}/${wSlat}</span>
+          </div>
+          <span class="qty-tag">x2</span>
+        </div>
+        <div class="group-sub-item">
+          <div class="file-info">
+            <a class="file-name" href="${encodeURI(slatFolder + '/' + dSlat)}" download>Depth Slat: ${dSlat}</a>
+            <span class="file-path">${slatFolder}/${dSlats = dSlat}</span>
+          </div>
+          <span class="qty-tag">x3</span>
+        </div>
+        <div class="group-sub-item">
+          <div class="file-info">
+            <a class="file-name" href="${encodeURI(gridDividersRoot + '/grid divider pin_tight.stl')}" download>grid divider pin_tight.stl</a>
+            <span class="file-path">${gridDividersRoot}/grid divider pin_tight.stl</span>
+          </div>
+          <span class="qty-tag">x8</span>
+        </div>
+        <div class="group-sub-item">
+          <div class="file-info">
+            <a class="file-name" href="${encodeURI(gridDividersRoot + '/grid divider pin_loose.stl')}" download>grid divider pin_loose.stl</a>
+            <span class="file-path">${gridDividersRoot}/grid divider pin_loose.stl</span>
+          </div>
+          <span class="qty-tag">x8</span>
+        </div>
+      </li>
+    `;
+
+
+    // 5. Roof Gallery
     const svgGrid = `<svg width="140" height="70" viewBox="0 0 140 70" fill="none"><rect x="10" y="24" width="120" height="34" rx="4" fill="#21262d" stroke="#58a6ff" stroke-width="1.5"/><rect x="20" y="16" width="30" height="12" rx="2" fill="#30363d" stroke="#58a6ff"/><rect x="56" y="16" width="30" height="12" rx="2" fill="#30363d" stroke="#58a6ff"/><rect x="92" y="16" width="30" height="12" rx="2" fill="#30363d" stroke="#58a6ff"/><line x1="20" y1="40" x2="120" y2="40" stroke="#388bfd" stroke-dasharray="2 2"/></svg>`;
     const svgTable = `<svg width="140" height="70" viewBox="0 0 140 70" fill="none"><rect x="10" y="24" width="120" height="34" rx="4" fill="#21262d" stroke="#7ee787" stroke-width="1.5"/><rect x="14" y="28" width="112" height="6" rx="2" fill="#30363d"/></svg>`;
     const svgHeavy = `<svg width="140" height="70" viewBox="0 0 140 70" fill="none"><rect x="10" y="28" width="120" height="30" rx="4" fill="#21262d" stroke="#f0883e" stroke-width="1.5"/><rect x="16" y="14" width="28" height="22" rx="3" fill="#30363d" stroke="#f0883e"/><rect x="96" y="14" width="28" height="22" rx="3" fill="#30363d" stroke="#f0883e"/><rect x="48" y="18" width="44" height="8" rx="4" fill="#f0883e"/></svg>`;
@@ -671,6 +750,7 @@ function renderList() {
 
     document.getElementById('size-files').innerHTML = buildCards(sizeItems);
     document.getElementById('universal-files').innerHTML = buildCards(universalItems) + keyGroupHtml;
+    document.getElementById('interior-files').innerHTML = buildCards(baseplateItem) + dividerGroupHtml;
     document.getElementById('roof-files').innerHTML = roofCards.map(item => `
       <li class="roof-card">
         <div class="roof-visual-box">${item.svg}</div>
@@ -685,38 +765,29 @@ function renderList() {
     const boltCount = h === '1F' ? 4 : 6;
     document.getElementById('hardware-spec').innerHTML = t.boltTextDrawer(boltCount);
 
-   } else {
+  } else {
     // SUSTAINERS MODE (02. SUSTAINERS)
     document.getElementById('roof-details-section').style.display = 'none';
     document.getElementById('title-universal').textContent = t.titleUniversalSustainer;
 
-    // In 02. SUSTAINERS, XL is "04. XL Families"
     const famPrefix = w === 'S' ? '01. S Families' :
                       w === 'M' ? '02. M Families' :
-                      w === 'L' ? '03. L Families' : '04. XL Families';
+                      w === 'L' ? '03. L Families' : '04. XL Families[span_0](start_span)'[span_0](end_span);
 
     const hingeGroup = (w === 'S' || w === 'M') ? 'S-M' : 'L-XL';
 
-    // Matches: 02. SUSTAINERS/[Family]/[Size]/Modules/[WD] [Height] Module.stl
     const sustainerSizeItems = [
-      {
-        name: `${wd} ${h} Module.stl`,
-        path: `02. SUSTAINERS/${famPrefix}/${wd}/Modules/${wd} ${h} Module.stl`,
-        qty: "x1"
-      },
-      {
-        name: `${wd} Roof.stl`,
-        path: `02. SUSTAINERS/${famPrefix}/${wd}/Roofs/${wd} Roof.stl`,
-        qty: "x1"
-      },
-      {
-        name: `${w}${h} Facade.stl`,
-        path: `02. SUSTAINERS/${famPrefix}/Facades/${w}${h} Facade.stl`,
-        qty: "x1"
-      }
+      { name: `${wd} ${h} Module.stl`, path: `02. SUSTAINERS/${famPrefix}/${wd}/Modules/${wd} ${h} Module.stl`, qty: "x1" }[span_1](start_span)[span_1](end_span),
+      { name: `${wd} Roof.stl`, path: `02. SUSTAINERS/${famPrefix}/${wd}/Roofs/${wd} Roof.stl`, qty: "x1" }[span_2](start_span)[span_2](end_span),
+      { name: `${w}${h} Facade.stl`, path: `02. SUSTAINERS/${famPrefix}/Facades/${w}${h} Facade.stl`, qty: "x1" }[span_3](start_span)[span_3](end_span)
     ];
 
-    // In 02. SUSTAINERS, Universal is "05. Universal"
+    const sustainerInteriorItems = [
+      { name: `${wd} Baseplate.stl`, path: `02. SUSTAINERS/${famPrefix}/${wd}/Baseplates/${wd} Baseplate.stl`, qty: "x1" },
+      { name: `${w}-${h} Width Divider.stl`, path: `02. SUSTAINERS/${famPrefix}/${wd}/Dividers/${w}-${h} Width Divider.stl`, qty: "x2" },
+      { name: `${wd}-${h} Depth Divider.stl`, path: `02. SUSTAINERS/${famPrefix}/${wd}/Dividers/${wd}-${h} Depth Divider.stl`, qty: "x3" }
+    ];
+
     const sustainerUniversalItems = [
       { name: "Lock Holder.stl", path: "02. SUSTAINERS/05. Universal/Locks/Lock Holder.stl", qty: "x2" },
       { name: "Lock Inner Part.stl", path: "02. SUSTAINERS/05. Universal/Locks/Lock Inner Part.stl", qty: "x2" },
@@ -727,17 +798,18 @@ function renderList() {
       { name: "Label for Sustainers.stl", path: "02. SUSTAINERS/05. Universal/Label for Sustainers.stl", qty: "x1" }
     ];
 
-    document.getElementById('size-files').innerHTML = buildCards(sustainerSizeItems);
+    document.getElementById('size-files').innerHTML = buildCards(sizeItems ? sustainerSizeItems : []);
     document.getElementById('universal-files').innerHTML = buildCards(sustainerUniversalItems);
+    document.getElementById('interior-files').innerHTML = buildCards(sustainerInteriorItems);
     document.getElementById('hardware-spec').innerHTML = t.boltTextSustainer;
   }
-
 }
 
 // Initial setup
 populateDropdowns();
 updateStaticText();
 renderList();
+
 </script>
 </body>
 </html>
