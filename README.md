@@ -2,6 +2,10 @@
 A zero-dependency local web STL file navigator and PDF guide viewer for the VAULT modular 3D-printed storage system.
 专为 VAULT 模块化 3D 打印收纳系统打造的本地网页版 STL 文件检索与 PDF 组装指南查看工具，完全零依赖。
 
+## Update
+10/29/2026: Bug fixed for sustainer part
+10/29/2026: Sustainer section added!!
+
 ## Quick Start
 快速上手
 
