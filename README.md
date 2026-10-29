@@ -4,6 +4,7 @@ A zero-dependency local web STL file navigator and PDF guide viewer for the VAUL
 
 ## Update
 10/29/2026: Bug fixed for sustainer part
+
 10/29/2026: Sustainer section added!!
 
 ## Quick Start
