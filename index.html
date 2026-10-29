@@ -603,6 +603,8 @@ function renderList() {
   if (type === 'drawers') {
     document.getElementById('roof-details-section').style.display = 'block';
     document.getElementById('title-universal').textContent = t.titleUniversalDrawer;
+    document.getElementById('interior-details-section').style.display = 'block'; 
+
 
     const famPrefix = w === 'S' ? '01. S Families' :
                       w === 'M' ? '02. M Families' :
@@ -703,7 +705,7 @@ function renderList() {
         <div class="group-sub-item">
           <div class="file-info">
             <a class="file-name" href="${encodeURI(slatFolder + '/' + dSlat)}" download>Depth Slat: ${dSlat}</a>
-            <span class="file-path">${slatFolder}/${dSlats = dSlat}</span>
+            <span class="file-path">${slatFolder}/${dSlat}</span>
           </div>
           <span class="qty-tag">x3</span>
         </div>
@@ -768,25 +770,60 @@ function renderList() {
   } else {
     // SUSTAINERS MODE (02. SUSTAINERS)
     document.getElementById('roof-details-section').style.display = 'none';
+    document.getElementById('interior-details-section').style.display = 'none';
     document.getElementById('title-universal').textContent = t.titleUniversalSustainer;
 
     const famPrefix = w === 'S' ? '01. S Families' :
                       w === 'M' ? '02. M Families' :
-                      w === 'L' ? '03. L Families' : '04. XL Families[span_0](start_span)'[span_0](end_span);
+                      w === 'L' ? '03. L Families' : '04. XL Families';
 
     const hingeGroup = (w === 'S' || w === 'M') ? 'S-M' : 'L-XL';
 
-    const sustainerSizeItems = [
-      { name: `${wd} ${h} Module.stl`, path: `02. SUSTAINERS/${famPrefix}/${wd}/Modules/${wd} ${h} Module.stl`, qty: "x1" }[span_1](start_span)[span_1](end_span),
-      { name: `${wd} Roof.stl`, path: `02. SUSTAINERS/${famPrefix}/${wd}/Roofs/${wd} Roof.stl`, qty: "x1" }[span_2](start_span)[span_2](end_span),
-      { name: `${w}${h} Facade.stl`, path: `02. SUSTAINERS/${famPrefix}/Facades/${w}${h} Facade.stl`, qty: "x1" }[span_3](start_span)[span_3](end_span)
-    ];
+    // Size items matching S/M vs L/XL
+    const sustainerSizeItems = [];
 
-    const sustainerInteriorItems = [
-      { name: `${wd} Baseplate.stl`, path: `02. SUSTAINERS/${famPrefix}/${wd}/Baseplates/${wd} Baseplate.stl`, qty: "x1" },
-      { name: `${w}-${h} Width Divider.stl`, path: `02. SUSTAINERS/${famPrefix}/${wd}/Dividers/${w}-${h} Width Divider.stl`, qty: "x2" },
-      { name: `${wd}-${h} Depth Divider.stl`, path: `02. SUSTAINERS/${famPrefix}/${wd}/Dividers/${wd}-${h} Depth Divider.stl`, qty: "x3" }
-    ];
+    if (w === 'L' || w === 'XL') {
+      sustainerSizeItems.push(
+        { 
+          name: `${wd} ${h} Flat Module.stl`, 
+          path: `02. SUSTAINERS/${famPrefix}/${wd}/Modules/${wd} ${h} Flat Module.stl`, 
+          qty: "x1 (Flat)" 
+        },
+        { 
+          name: `${wd} ${h} Dividers Module.stl`, 
+          path: `02. SUSTAINERS/${famPrefix}/${wd}/Modules/${wd} ${h} Dividers Module.stl`, 
+          qty: "x1 (Dividers)" 
+        },
+        { 
+          name: `${wd} ${h} Sealed Module.stl`, 
+          path: `02. SUSTAINERS/${famPrefix}/${wd}/Modules/${wd} ${h} Sealed Module.stl`, 
+          qty: "x1 (Sealed)" 
+        }
+      );
+    } else {
+      // S & M have a single module file (note space before .stl)
+      sustainerSizeItems.push({
+        name: `${wd} ${h} Module.stl`,
+        path: `02. SUSTAINERS/${famPrefix}/${wd}/Modules/${wd} ${h} Module.stl`,
+        qty: "x1"
+      });
+    }
+
+    // Common roof and facade
+    sustainerSizeItems.push(
+      { 
+        name: `${wd} Roof.stl`, 
+        path: `02. SUSTAINERS/${famPrefix}/${wd}/Roofs/${wd} Roof.stl`, 
+        qty: "x1" 
+      },
+      { 
+        name: `${w}${h} Facade.stl`, 
+        path: `02. SUSTAINERS/${famPrefix}/Facades/${w}${h} Facade.stl`, 
+        qty: "x1" 
+      }
+    );
+
+
 
     const sustainerUniversalItems = [
       { name: "Lock Holder.stl", path: "02. SUSTAINERS/05. Universal/Locks/Lock Holder.stl", qty: "x2" },
@@ -798,11 +835,11 @@ function renderList() {
       { name: "Label for Sustainers.stl", path: "02. SUSTAINERS/05. Universal/Label for Sustainers.stl", qty: "x1" }
     ];
 
-    document.getElementById('size-files').innerHTML = buildCards(sizeItems ? sustainerSizeItems : []);
+    document.getElementById('size-files').innerHTML = buildCards(sustainerSizeItems);
     document.getElementById('universal-files').innerHTML = buildCards(sustainerUniversalItems);
-    document.getElementById('interior-files').innerHTML = buildCards(sustainerInteriorItems);
     document.getElementById('hardware-spec').innerHTML = t.boltTextSustainer;
   }
+
 }
 
 // Initial setup
